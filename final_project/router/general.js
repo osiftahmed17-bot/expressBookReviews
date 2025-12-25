@@ -24,9 +24,9 @@ public_users.post("/register", (req, res) => {
 });
 
 /**
- * TASK 1 & TASK 10:
+ * TASK 1 & TASK 10
  * Get the list of books available in the shop
- * USING PROMISE / ASYNC-AWAIT
+ * Using Promise + async/await
  */
 public_users.get("/", async (req, res) => {
   try {
@@ -37,15 +37,15 @@ public_users.get("/", async (req, res) => {
 
     const bookList = await getBooks();
     return res.status(200).json(bookList);
-  } catch (err) {
-    return res.status(500).json({ message: "Error retrieving books" });
+  } catch (error) {
+    return res.status(500).json({ message: "Unable to fetch books" });
   }
 });
 
 /**
- * TASK 2 & TASK 11:
+ * TASK 2 & TASK 11
  * Get book details based on ISBN
- * USING PROMISE / ASYNC-AWAIT
+ * Using Promise + async/await
  */
 public_users.get("/isbn/:isbn", async (req, res) => {
   const isbn = req.params.isbn;
@@ -53,21 +53,24 @@ public_users.get("/isbn/:isbn", async (req, res) => {
   try {
     const getBookByISBN = (isbn) =>
       new Promise((resolve, reject) => {
-        if (books[isbn]) resolve(books[isbn]);
-        else reject("Book not found");
+        if (books[isbn]) {
+          resolve(books[isbn]);
+        } else {
+          reject("Book not found");
+        }
       });
 
     const book = await getBookByISBN(isbn);
     return res.status(200).json(book);
-  } catch (err) {
-    return res.status(404).json({ message: err });
+  } catch (error) {
+    return res.status(404).json({ message: error });
   }
 });
 
 /**
- * TASK 3 & TASK 12:
+ * TASK 3 & TASK 12
  * Get book details based on Author
- * USING PROMISE / ASYNC-AWAIT
+ * Using Promise + async/await
  */
 public_users.get("/author/:author", async (req, res) => {
   const author = req.params.author;
@@ -83,15 +86,15 @@ public_users.get("/author/:author", async (req, res) => {
 
     const booksByAuthor = await getBooksByAuthor(author);
     return res.status(200).json(booksByAuthor);
-  } catch (err) {
-    return res.status(500).json({ message: "Error retrieving books" });
+  } catch (error) {
+    return res.status(500).json({ message: "Unable to fetch books" });
   }
 });
 
 /**
- * TASK 4 & TASK 13:
+ * TASK 4 & TASK 13
  * Get book details based on Title
- * USING PROMISE / ASYNC-AWAIT
+ * Using Promise + async/await
  */
 public_users.get("/title/:title", async (req, res) => {
   const title = req.params.title;
@@ -107,13 +110,13 @@ public_users.get("/title/:title", async (req, res) => {
 
     const booksByTitle = await getBooksByTitle(title);
     return res.status(200).json(booksByTitle);
-  } catch (err) {
-    return res.status(500).json({ message: "Error retrieving books" });
+  } catch (error) {
+    return res.status(500).json({ message: "Unable to fetch books" });
   }
 });
 
 /**
- * TASK 5:
+ * TASK 5
  * Get book reviews based on ISBN
  */
 public_users.get("/review/:isbn", (req, res) => {

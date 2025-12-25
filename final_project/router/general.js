@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -24,61 +24,99 @@ public_users.post("/register", (req, res) => {
 });
 
 /**
- * TASK 1: Get the list of books available in the shop
+ * TASK 1 & TASK 10:
+ * Get the list of books available in the shop
+ * USING PROMISE / ASYNC-AWAIT
  */
-public_users.get('/', function (req, res) {
-  return res.status(200).json(JSON.stringify(books, null, 2));
+public_users.get("/", async (req, res) => {
+  try {
+    const getBooks = () =>
+      new Promise((resolve) => {
+        resolve(books);
+      });
+
+    const bookList = await getBooks();
+    return res.status(200).json(bookList);
+  } catch (err) {
+    return res.status(500).json({ message: "Error retrieving books" });
+  }
 });
 
 /**
- * TASK 2: Get book details based on ISBN
+ * TASK 2 & TASK 11:
+ * Get book details based on ISBN
+ * USING PROMISE / ASYNC-AWAIT
  */
-public_users.get('/isbn/:isbn', function (req, res) {
+public_users.get("/isbn/:isbn", async (req, res) => {
   const isbn = req.params.isbn;
 
-  if (books[isbn]) {
-    return res.status(200).json(books[isbn]);
+  try {
+    const getBookByISBN = (isbn) =>
+      new Promise((resolve, reject) => {
+        if (books[isbn]) resolve(books[isbn]);
+        else reject("Book not found");
+      });
+
+    const book = await getBookByISBN(isbn);
+    return res.status(200).json(book);
+  } catch (err) {
+    return res.status(404).json({ message: err });
   }
-
-  return res.status(404).json({ message: "Book not found" });
 });
 
 /**
- * TASK 3: Get book details based on author
+ * TASK 3 & TASK 12:
+ * Get book details based on Author
+ * USING PROMISE / ASYNC-AWAIT
  */
-public_users.get('/author/:author', function (req, res) {
+public_users.get("/author/:author", async (req, res) => {
   const author = req.params.author;
-  let result = [];
 
-  Object.keys(books).forEach((isbn) => {
-    if (books[isbn].author === author) {
-      result.push(books[isbn]);
-    }
-  });
+  try {
+    const getBooksByAuthor = (author) =>
+      new Promise((resolve) => {
+        const result = Object.values(books).filter(
+          (book) => book.author === author
+        );
+        resolve(result);
+      });
 
-  return res.status(200).json(result);
+    const booksByAuthor = await getBooksByAuthor(author);
+    return res.status(200).json(booksByAuthor);
+  } catch (err) {
+    return res.status(500).json({ message: "Error retrieving books" });
+  }
 });
 
 /**
- * TASK 4: Get book details based on title
+ * TASK 4 & TASK 13:
+ * Get book details based on Title
+ * USING PROMISE / ASYNC-AWAIT
  */
-public_users.get('/title/:title', function (req, res) {
+public_users.get("/title/:title", async (req, res) => {
   const title = req.params.title;
-  let result = [];
 
-  Object.keys(books).forEach((isbn) => {
-    if (books[isbn].title === title) {
-      result.push(books[isbn]);
-    }
-  });
+  try {
+    const getBooksByTitle = (title) =>
+      new Promise((resolve) => {
+        const result = Object.values(books).filter(
+          (book) => book.title === title
+        );
+        resolve(result);
+      });
 
-  return res.status(200).json(result);
+    const booksByTitle = await getBooksByTitle(title);
+    return res.status(200).json(booksByTitle);
+  } catch (err) {
+    return res.status(500).json({ message: "Error retrieving books" });
+  }
 });
 
 /**
- * TASK 5: Get book reviews based on ISBN
+ * TASK 5:
+ * Get book reviews based on ISBN
  */
-public_users.get('/review/:isbn', function (req, res) {
+public_users.get("/review/:isbn", (req, res) => {
   const isbn = req.params.isbn;
 
   if (books[isbn]) {
